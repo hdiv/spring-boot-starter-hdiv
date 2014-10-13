@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hdiv/spring-boot-starter-hdiv.svg)](https://travis-ci.org/hdiv/spring-boot-starter-hdiv)
+
 spring-boot-starter-hdiv
 ========================
 
