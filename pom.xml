@@ -4,7 +4,7 @@
 
 	<groupId>org.hdiv</groupId>
 	<artifactId>spring-boot-starter-hdiv</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>spring-boot-starter-hdiv</name>
@@ -13,10 +13,65 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.spring-boot.version>1.2.0.M2</org.spring-boot.version>
-		<org.hdiv.version>2.1.8</org.hdiv.version>
+		<org.spring-boot.version>1.2.0.RELEASE</org.spring-boot.version>
+		<org.hdiv.version>2.1.9</org.hdiv.version>
 		<java.version>1.6</java.version>
 	</properties>
+
+	<developers>
+		<developer>
+			<name>Roberto Velasco</name>
+			<id>robertovelasco</id>
+			<email>roberto at hdiv.org</email>
+			<roles>
+				<role>Project Admin</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Gotzon Illarramendi</name>
+			<id>gillarramendi</id>
+			<email>gotzon at hdiv.org</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>oss-staging</id>
+			<name>OSS Staging repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>oss-snapshot</id>
+			<name>OSS Snapshot repository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments />
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git://github.com/hdiv/spring-boot-starter-hdiv.git</connection>
+		<developerConnection>scm:git:git://github.com/hdiv/spring-boot-starter-hdiv.git</developerConnection>
+		<url>git@github.com:hdiv/spring-boot-starter-hdiv.git</url>
+	</scm>
+
+	<organization>
+		<name>hdiv.org</name>
+		<url>http://www.hdiv.org/</url>
+	</organization>
 
 	<dependencies>
 		<dependency>
@@ -77,7 +132,7 @@
 		</plugins>
 	</build>
 
-	<!-- Only required to access Spring Boot Milestone builds -->
+	<!-- Only required to access Spring Boot Milestone builds 
 	<repositories>
 		<repository>
 			<id>spring-milestones</id>
@@ -88,5 +143,42 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	-->
 
+	<profiles>
+		<!-- Profile to activate artifact signing in release -->
+		<profile>
+			<id>performRelease</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-install-plugin</artifactId>
+						<version>2.5.2</version>
+						<configuration>
+							<createChecksum>true</createChecksum>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>package</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
