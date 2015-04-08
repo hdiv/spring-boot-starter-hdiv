@@ -4,7 +4,7 @@
 
 	<groupId>org.hdiv</groupId>
 	<artifactId>spring-boot-starter-hdiv</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>spring-boot-starter-hdiv</name>
@@ -13,8 +13,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.spring-boot.version>1.2.0.RELEASE</org.spring-boot.version>
-		<org.hdiv.version>2.1.9</org.hdiv.version>
+		<org.spring-boot.version>1.2.3.RELEASE</org.spring-boot.version>
+		<org.hdiv.version>2.1.10-SNAPSHOT</org.hdiv.version>
 		<java.version>1.6</java.version>
 	</properties>
 
@@ -40,13 +40,11 @@
 
 	<distributionManagement>
 		<repository>
-			<uniqueVersion>false</uniqueVersion>
 			<id>oss-staging</id>
 			<name>OSS Staging repository</name>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 		<snapshotRepository>
-			<uniqueVersion>true</uniqueVersion>
 			<id>oss-snapshot</id>
 			<name>OSS Snapshot repository</name>
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
@@ -132,18 +130,9 @@
 		</plugins>
 	</build>
 
-	<!-- Only required to access Spring Boot Milestone builds 
-	<repositories>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>http://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	-->
+	<!-- Only required to access Spring Boot Milestone builds <repositories> 
+		<repository> <id>spring-milestones</id> <name>Spring Milestones</name> <url>http://repo.spring.io/milestone</url> 
+		<snapshots> <enabled>false</enabled> </snapshots> </repository> </repositories> -->
 
 	<profiles>
 		<!-- Profile to activate artifact signing in release -->

@@ -15,11 +15,12 @@
  */
 package org.hdiv.spring.boot.autoconfigure;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.hdiv.config.HDIVConfig;
-import org.hdiv.spring.boot.autoconfigure.HdivAutoConfiguration;
+import org.hdiv.validator.EditableDataValidationResult;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration;
@@ -60,10 +61,13 @@ public class HdivAutoConfigurationTests {
 
 		assertTrue(config.isStartParameter("_csrf"));
 
-		assertTrue(config.existValidations());
-		assertTrue(config.areEditableParameterValuesValid("/", "paramName", new String[] { "paramValue" }, "text"));
-		assertFalse(config.areEditableParameterValuesValid("/", "paramName", new String[] { "<script>XSS</script>" },
-				"text"));
+		EditableDataValidationResult result = config.areEditableParameterValuesValid("/", "paramName",
+				new String[] { "paramValue" }, "text");
+		assertTrue(result.isValid());
+		result = config.areEditableParameterValuesValid("/", "paramName", new String[] { "<script>XSS</script>" },
+				"text");
+		assertFalse(result.isValid());
+		assertEquals("simpleXSS", result.getValidationId());
 	}
 
 	@Configuration
