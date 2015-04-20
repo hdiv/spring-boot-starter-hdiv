@@ -14,7 +14,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.spring-boot.version>1.2.3.RELEASE</org.spring-boot.version>
-		<org.hdiv.version>2.1.10-SNAPSHOT</org.hdiv.version>
+		<org.hdiv.version>2.1.11-SNAPSHOT</org.hdiv.version>
 		<java.version>1.6</java.version>
 	</properties>
 
