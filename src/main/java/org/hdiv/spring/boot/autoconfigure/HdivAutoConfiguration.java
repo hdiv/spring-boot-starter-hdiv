@@ -15,13 +15,6 @@
  */
 package org.hdiv.spring.boot.autoconfigure;
 
-import java.util.EnumSet;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-
 import org.hdiv.config.annotation.EnableHdivWebSecurity;
 import org.hdiv.config.annotation.ExclusionRegistry;
 import org.hdiv.config.annotation.ValidationConfigurer;
@@ -32,7 +25,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
-import org.springframework.boot.context.embedded.ServletContextInitializer;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -96,25 +89,17 @@ public class HdivAutoConfiguration {
 	}
 
 	@Bean
-	public ServletContextInitializer validatorFilter() {
-		ServletContextInitializer initializer = new ServletContextInitializer() {
+	public FilterRegistrationBean filterRegistrationBean() {
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+		ValidatorFilter validatorFilter = new ValidatorFilter();
+		registrationBean.setFilter(validatorFilter);
+		registrationBean.setOrder(0);
+		return registrationBean;
+	}
 
-			public void onStartup(ServletContext servletContext) throws ServletException {
-
-				// Register HDIV InitListener and ValidatorFilter
-
-				// InitListener
-				servletContext.addListener(new InitListener());
-
-				// ValidatorFilter
-				FilterRegistration.Dynamic registration = servletContext.addFilter("validatorFilter",
-						new ValidatorFilter());
-				EnumSet<DispatcherType> dispatcherTypes = EnumSet.of(DispatcherType.REQUEST);
-				// isMatchAfter false to put it before existing filters
-				registration.addMappingForUrlPatterns(dispatcherTypes, false, "/*");
-			}
-		};
-		return initializer;
+	@Bean
+	public InitListener initListener() {
+		return new InitListener();
 	}
 
 }
