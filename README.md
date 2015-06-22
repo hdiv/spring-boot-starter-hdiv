@@ -8,13 +8,23 @@ A spring-boot starter that simplifies the usage of the [HDIV](http://www.hdiv.or
 You only have to add this library to your Spring Boot project and a HDIV filter will be registered for you.
 
 ### Maven Integration
-Add the following dependency to your ``pom.xml`` file:
+Add one of the following dependency to your ``pom.xml`` file, depending on the view technology your project use:
 
 ```
 <dependency>
 	<groupId>org.hdiv</groupId>
-	<artifactId>spring-boot-starter-hdiv</artifactId>
+	<artifactId>spring-boot-starter-hdiv-thymeleaf</artifactId>
 	<version>LATEST_VERSION</version>
+	<type>pom</type>
+</dependency>
+```
+
+```
+<dependency>
+	<groupId>org.hdiv</groupId>
+	<artifactId>spring-boot-starter-hdiv-jsp</artifactId>
+	<version>LATEST_VERSION</version>
+	<type>pom</type>
 </dependency>
 ```
 

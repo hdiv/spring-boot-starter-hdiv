@@ -5,7 +5,7 @@
 	<groupId>org.hdiv</groupId>
 	<artifactId>spring-boot-starter-hdiv</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>spring-boot-starter-hdiv</name>
 	<url>http://www.hdiv.org</url>
@@ -13,8 +13,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.spring-boot.version>1.2.3.RELEASE</org.spring-boot.version>
-		<org.hdiv.version>2.1.11-SNAPSHOT</org.hdiv.version>
+		<org.spring-boot.version>1.2.4.RELEASE</org.spring-boot.version>
+		<org.hdiv.version>2.1.11</org.hdiv.version>
 		<java.version>1.6</java.version>
 	</properties>
 
@@ -71,51 +71,11 @@
 		<url>http://www.hdiv.org/</url>
 	</organization>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<version>${org.spring-boot.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<version>${org.spring-boot.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-			<version>${org.spring-boot.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<version>${org.spring-boot.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hdiv</groupId>
-			<artifactId>hdiv-config</artifactId>
-			<version>${org.hdiv.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.hdiv</groupId>
-			<artifactId>hdiv-thymeleaf</artifactId>
-			<version>${org.hdiv.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
+	<modules>
+		<module>spring-boot-starter-hdiv-commons</module>
+		<module>spring-boot-starter-hdiv-jsp</module>
+		<module>spring-boot-starter-hdiv-thymeleaf</module>
+	</modules>
 
 	<build>
 		<plugins>

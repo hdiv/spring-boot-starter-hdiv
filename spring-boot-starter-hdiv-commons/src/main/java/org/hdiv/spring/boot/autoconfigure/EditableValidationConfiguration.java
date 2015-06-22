@@ -17,8 +17,10 @@ package org.hdiv.spring.boot.autoconfigure;
 
 import javax.annotation.PostConstruct;
 
+import org.hdiv.config.xml.EditableValidationsBeanDefinitionParser;
 import org.hdiv.web.validator.EditableParameterValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
@@ -27,6 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 public class EditableValidationConfiguration {
 
 	@Autowired
+	@Qualifier(EditableValidationsBeanDefinitionParser.EDITABLE_VALIDATOR_BEAN_NAME)
 	private EditableParameterValidator editableParameterValidator;
 
 	@Autowired

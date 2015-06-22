@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.hdiv</groupId>
+		<artifactId>spring-boot-starter-hdiv</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>spring-boot-starter-hdiv-thymeleaf</artifactId>
+	<packaging>pom</packaging>
+
+	<name>spring-boot-starter-hdiv-thymeleaf</name>
+	<url>http://www.hdiv.org</url>
+	<description>HDIV starter for Spring Boot projects that use Thymeleaf as view technology</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.hdiv</groupId>
+			<artifactId>spring-boot-starter-hdiv-commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hdiv</groupId>
+			<artifactId>hdiv-thymeleaf</artifactId>
+			<version>${org.hdiv.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+</project>
