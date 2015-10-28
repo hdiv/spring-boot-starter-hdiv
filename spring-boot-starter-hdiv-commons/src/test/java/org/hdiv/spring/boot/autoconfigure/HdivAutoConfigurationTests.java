@@ -61,11 +61,11 @@ public class HdivAutoConfigurationTests {
 
 		assertTrue(config.isStartParameter("_csrf"));
 
-		EditableDataValidationResult result = config.areEditableParameterValuesValid("/", "paramName",
+		EditableDataValidationResult result = config.getEditableDataValidationProvider().validate("/", "paramName",
 				new String[] { "paramValue" }, "text");
 		assertTrue(result.isValid());
-		result = config.areEditableParameterValuesValid("/", "paramName", new String[] { "<script>XSS</script>" },
-				"text");
+		result = config.getEditableDataValidationProvider().validate("/", "paramName",
+				new String[] { "<script>XSS</script>" }, "text");
 		assertFalse(result.isValid());
 		assertEquals("simpleXSS", result.getValidationId());
 	}
