@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.hdiv</groupId>
 		<artifactId>spring-boot-starter-hdiv</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.0.1</version>
 	</parent>
 	<artifactId>spring-boot-starter-hdiv-commons</artifactId>
 	<packaging>jar</packaging>

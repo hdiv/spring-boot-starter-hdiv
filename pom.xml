@@ -4,7 +4,7 @@
 
 	<groupId>org.hdiv</groupId>
 	<artifactId>spring-boot-starter-hdiv</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<packaging>pom</packaging>
 
 	<name>spring-boot-starter-hdiv</name>
@@ -14,7 +14,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.spring-boot.version>1.2.7.RELEASE</org.spring-boot.version>
-		<org.hdiv.version>2.1.13-SNAPSHOT</org.hdiv.version>
+		<org.hdiv.version>2.1.13</org.hdiv.version>
 		<java.version>1.6</java.version>
 	</properties>
 
