@@ -25,7 +25,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -45,7 +45,7 @@ public class HdivAutoConfiguration {
 	protected static class HdivDefaultConfiguration extends HdivWebSecurityConfigurerAdapter {
 
 		@Override
-		public void addExclusions(ExclusionRegistry registry) {
+		public void addExclusions(final ExclusionRegistry registry) {
 
 			// Static content
 			registry.addUrlExclusions("/webjars/.*").method("GET");
@@ -80,7 +80,7 @@ public class HdivAutoConfiguration {
 		}
 
 		@Override
-		public void configureEditableValidation(ValidationConfigurer validationConfigurer) {
+		public void configureEditableValidation(final ValidationConfigurer validationConfigurer) {
 
 			// Enable default rules for all URLs.
 			validationConfigurer.addValidation(".*");
