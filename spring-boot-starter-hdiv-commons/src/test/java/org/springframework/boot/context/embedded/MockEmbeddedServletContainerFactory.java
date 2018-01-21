@@ -16,6 +16,12 @@
 
 package org.springframework.boot.context.embedded;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -31,46 +37,37 @@ import javax.servlet.ServletRegistration;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 
 /**
  * Mock {@link EmbeddedServletContainerFactory}.
  *
  * @author Phillip Webb
  */
-public class MockEmbeddedServletContainerFactory extends
-		AbstractEmbeddedServletContainerFactory {
+public class MockEmbeddedServletContainerFactory extends AbstractEmbeddedServletContainerFactory {
 
 	private MockEmbeddedServletContainer container;
 
 	@Override
-	public EmbeddedServletContainer getEmbeddedServletContainer(
-			ServletContextInitializer... initializers) {
-		this.container = spy(new MockEmbeddedServletContainer(initializers, getPort()));
-		return this.container;
+	public EmbeddedServletContainer getEmbeddedServletContainer(final ServletContextInitializer... initializers) {
+		container = spy(new MockEmbeddedServletContainer(initializers, getPort()));
+		return container;
 	}
 
 	public MockEmbeddedServletContainer getContainer() {
-		return this.container;
+		return container;
 	}
 
 	public ServletContext getServletContext() {
 		return getContainer() == null ? null : getContainer().servletContext;
 	}
 
-	public RegisteredServlet getRegisteredServlet(int index) {
-		return getContainer() == null ? null : getContainer().getRegisteredServlets()
-				.get(index);
+	public RegisteredServlet getRegisteredServlet(final int index) {
+		return getContainer() == null ? null : getContainer().getRegisteredServlets().get(index);
 	}
 
-	public RegisteredFilter getRegisteredFilter(int index) {
-		return getContainer() == null ? null : getContainer().getRegisteredFilters().get(
-				index);
+	public RegisteredFilter getRegisteredFilter(final int index) {
+		return getContainer() == null ? null : getContainer().getRegisteredFilters().get(index);
 	}
 
 	public static class MockEmbeddedServletContainer implements EmbeddedServletContainer {
@@ -85,8 +82,7 @@ public class MockEmbeddedServletContainerFactory extends
 
 		private final int port;
 
-		public MockEmbeddedServletContainer(ServletContextInitializer[] initializers,
-				int port) {
+		public MockEmbeddedServletContainer(final ServletContextInitializer[] initializers, final int port) {
 			this.initializers = initializers;
 			this.port = port;
 			initialize();
@@ -94,39 +90,28 @@ public class MockEmbeddedServletContainerFactory extends
 
 		private void initialize() {
 			try {
-				this.servletContext = mock(ServletContext.class);
-				given(this.servletContext.addServlet(anyString(), (Servlet) anyObject()))
-						.willAnswer(new Answer<ServletRegistration.Dynamic>() {
-							@Override
-							public ServletRegistration.Dynamic answer(
-									InvocationOnMock invocation) throws Throwable {
-								RegisteredServlet registeredServlet = new RegisteredServlet(
-										(Servlet) invocation.getArguments()[1]);
-								MockEmbeddedServletContainer.this.registeredServlets
-										.add(registeredServlet);
-								return registeredServlet.getRegistration();
-							}
-						});
-				given(this.servletContext.addFilter(anyString(), (Filter) anyObject()))
-						.willAnswer(new Answer<FilterRegistration.Dynamic>() {
-							@Override
-							public FilterRegistration.Dynamic answer(
-									InvocationOnMock invocation) throws Throwable {
-								RegisteredFilter registeredFilter = new RegisteredFilter(
-										(Filter) invocation.getArguments()[1]);
-								MockEmbeddedServletContainer.this.registeredFilters
-										.add(registeredFilter);
-								return registeredFilter.getRegistration();
-							}
-						});
-				given(this.servletContext.getInitParameterNames()).willReturn(
-						MockEmbeddedServletContainer.<String> emptyEnumeration());
-				given(this.servletContext.getAttributeNames()).willReturn(
-						MockEmbeddedServletContainer.<String> emptyEnumeration());
-				given(this.servletContext.getNamedDispatcher("default")).willReturn(
-						mock(RequestDispatcher.class));
-				for (ServletContextInitializer initializer : this.initializers) {
-					initializer.onStartup(this.servletContext);
+				servletContext = mock(ServletContext.class);
+				given(servletContext.addServlet(anyString(), (Servlet) anyObject())).willAnswer(new Answer<ServletRegistration.Dynamic>() {
+					@Override
+					public ServletRegistration.Dynamic answer(final InvocationOnMock invocation) throws Throwable {
+						RegisteredServlet registeredServlet = new RegisteredServlet((Servlet) invocation.getArguments()[1]);
+						registeredServlets.add(registeredServlet);
+						return registeredServlet.getRegistration();
+					}
+				});
+				given(servletContext.addFilter(anyString(), (Filter) anyObject())).willAnswer(new Answer<FilterRegistration.Dynamic>() {
+					@Override
+					public FilterRegistration.Dynamic answer(final InvocationOnMock invocation) throws Throwable {
+						RegisteredFilter registeredFilter = new RegisteredFilter((Filter) invocation.getArguments()[1]);
+						registeredFilters.add(registeredFilter);
+						return registeredFilter.getRegistration();
+					}
+				});
+				given(servletContext.getInitParameterNames()).willReturn(MockEmbeddedServletContainer.<String> emptyEnumeration());
+				given(servletContext.getAttributeNames()).willReturn(MockEmbeddedServletContainer.<String> emptyEnumeration());
+				given(servletContext.getNamedDispatcher("default")).willReturn(mock(RequestDispatcher.class));
+				for (ServletContextInitializer initializer : initializers) {
+					initializer.onStartup(servletContext);
 				}
 			}
 			catch (ServletException ex) {
@@ -159,29 +144,29 @@ public class MockEmbeddedServletContainerFactory extends
 
 		@Override
 		public void stop() {
-			this.servletContext = null;
-			this.registeredServlets.clear();
+			servletContext = null;
+			registeredServlets.clear();
 		}
 
 		public Servlet[] getServlets() {
-			Servlet[] servlets = new Servlet[this.registeredServlets.size()];
+			Servlet[] servlets = new Servlet[registeredServlets.size()];
 			for (int i = 0; i < servlets.length; i++) {
-				servlets[i] = this.registeredServlets.get(i).getServlet();
+				servlets[i] = registeredServlets.get(i).getServlet();
 			}
 			return servlets;
 		}
 
 		public List<RegisteredServlet> getRegisteredServlets() {
-			return this.registeredServlets;
+			return registeredServlets;
 		}
 
 		public List<RegisteredFilter> getRegisteredFilters() {
-			return this.registeredFilters;
+			return registeredFilters;
 		}
 
 		@Override
 		public int getPort() {
-			return this.port;
+			return port;
 		}
 	}
 
@@ -191,17 +176,17 @@ public class MockEmbeddedServletContainerFactory extends
 
 		private final ServletRegistration.Dynamic registration;
 
-		public RegisteredServlet(Servlet servlet) {
+		public RegisteredServlet(final Servlet servlet) {
 			this.servlet = servlet;
-			this.registration = mock(ServletRegistration.Dynamic.class);
+			registration = mock(ServletRegistration.Dynamic.class);
 		}
 
 		public ServletRegistration.Dynamic getRegistration() {
-			return this.registration;
+			return registration;
 		}
 
 		public Servlet getServlet() {
-			return this.servlet;
+			return servlet;
 		}
 	}
 
@@ -211,17 +196,17 @@ public class MockEmbeddedServletContainerFactory extends
 
 		private final FilterRegistration.Dynamic registration;
 
-		public RegisteredFilter(Filter filter) {
+		public RegisteredFilter(final Filter filter) {
 			this.filter = filter;
-			this.registration = mock(FilterRegistration.Dynamic.class);
+			registration = mock(FilterRegistration.Dynamic.class);
 		}
 
 		public FilterRegistration.Dynamic getRegistration() {
-			return this.registration;
+			return registration;
 		}
 
 		public Filter getFilter() {
-			return this.filter;
+			return filter;
 		}
 	}
 }
