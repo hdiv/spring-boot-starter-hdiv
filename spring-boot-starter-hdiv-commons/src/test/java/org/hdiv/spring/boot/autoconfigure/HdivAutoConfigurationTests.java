@@ -1,5 +1,5 @@
 /**
- * Copyright 2005-2014 hdiv.org
+ * Copyright 2005-2018 hdiv.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.hdiv.config.HDIVConfig;
+import org.hdiv.util.Method;
 import org.hdiv.validator.EditableDataValidationResult;
 import org.junit.After;
 import org.junit.Test;
-import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpMessageConvertersAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
@@ -40,32 +41,30 @@ public class HdivAutoConfigurationTests {
 
 	private static final MockEmbeddedServletContainerFactory containerFactory = new MockEmbeddedServletContainerFactory();
 
-	private AnnotationConfigEmbeddedWebApplicationContext context = new AnnotationConfigEmbeddedWebApplicationContext();
+	private final AnnotationConfigEmbeddedWebApplicationContext context = new AnnotationConfigEmbeddedWebApplicationContext();
 
 	@After
 	public void close() {
-		if (this.context != null) {
-			this.context.close();
+		if (context != null) {
+			context.close();
 		}
 	}
 
 	@Test
 	public void defaultConfig() throws Exception {
-		this.context.register(Config.class, WebMvcAutoConfiguration.class,
-				HttpMessageConvertersAutoConfiguration.class, PropertyPlaceholderAutoConfiguration.class,
-				HdivAutoConfiguration.class);
-		this.context.refresh();
-		HDIVConfig config = this.context.getBean(HDIVConfig.class);
-		assertTrue(config.isStartPage("/", "get"));
-		assertTrue(config.isStartPage("/example.js", "get"));
+		context.register(Config.class, WebMvcAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class,
+				PropertyPlaceholderAutoConfiguration.class, HdivAutoConfiguration.class);
+		context.refresh();
+		HDIVConfig config = context.getBean(HDIVConfig.class);
+		assertTrue(config.isStartPage("/", Method.GET));
+		assertTrue(config.isStartPage("/example.js", Method.GET));
 
 		assertTrue(config.isStartParameter("_csrf"));
 
 		EditableDataValidationResult result = config.getEditableDataValidationProvider().validate("/", "paramName",
 				new String[] { "paramValue" }, "text");
 		assertTrue(result.isValid());
-		result = config.getEditableDataValidationProvider().validate("/", "paramName",
-				new String[] { "<script>XSS</script>" }, "text");
+		result = config.getEditableDataValidationProvider().validate("/", "paramName", new String[] { "<script>XSS</script>" }, "text");
 		assertFalse(result.isValid());
 		assertEquals("simpleXSS", result.getValidationId());
 	}

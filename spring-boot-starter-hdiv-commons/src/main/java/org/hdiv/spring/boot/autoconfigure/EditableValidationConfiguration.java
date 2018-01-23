@@ -1,5 +1,5 @@
 /**
- * Copyright 2005-2014 hdiv.org
+ * Copyright 2005-2018 hdiv.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,7 @@ public class EditableValidationConfiguration {
 	public void initEditableValidation() {
 
 		// Add HDIVs Validator for editable validation to Spring MVC
-		ConfigurableWebBindingInitializer initializer = (ConfigurableWebBindingInitializer) handlerAdapter
-				.getWebBindingInitializer();
+		ConfigurableWebBindingInitializer initializer = (ConfigurableWebBindingInitializer) handlerAdapter.getWebBindingInitializer();
 		if (initializer.getValidator() != null) {
 			// Wrap existing validator
 			editableParameterValidator.setInnerValidator(initializer.getValidator());
