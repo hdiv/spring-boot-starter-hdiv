@@ -15,22 +15,19 @@
  */
 package org.hdiv.spring.boot.autoconfigure;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hdiv.config.HDIVConfig;
 import org.hdiv.util.Method;
-import org.hdiv.validator.EditableDataValidationResult;
-import org.junit.After;
 import org.junit.Test;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.HttpMessageConvertersAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
-import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizerBeanPostProcessor;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.MockEmbeddedServletContainerFactory;
+import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.MockServletWebServerFactory;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,47 +36,41 @@ import org.springframework.context.annotation.Configuration;
  */
 public class HdivAutoConfigurationTests {
 
-	private static final MockEmbeddedServletContainerFactory containerFactory = new MockEmbeddedServletContainerFactory();
+	private static final MockServletWebServerFactory webServerFactory = new MockServletWebServerFactory();
 
-	private final AnnotationConfigEmbeddedWebApplicationContext context = new AnnotationConfigEmbeddedWebApplicationContext();
-
-	@After
-	public void close() {
-		if (context != null) {
-			context.close();
-		}
-	}
+	private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
+			.withConfiguration(AutoConfigurations.of(WebMvcAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class,
+					PropertyPlaceholderAutoConfiguration.class, HdivAutoConfiguration.class))
+			.withUserConfiguration(Config.class);
 
 	@Test
 	public void defaultConfig() throws Exception {
-		context.register(Config.class, WebMvcAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class,
-				PropertyPlaceholderAutoConfiguration.class, HdivAutoConfiguration.class);
-		context.refresh();
-		HDIVConfig config = context.getBean(HDIVConfig.class);
-		assertTrue(config.isStartPage("/", Method.GET));
-		assertTrue(config.isStartPage("/example.js", Method.GET));
+		contextRunner.run((context) -> {
+			assertThat(context).getBeans(HDIVConfig.class).hasSize(1);
+			assertThat(context.getBean(HDIVConfig.class).isStartPage("/", Method.GET)).isTrue();
+			assertThat(context.getBean(HDIVConfig.class).isStartPage("/example.js", Method.GET)).isTrue();
+			assertThat(context.getBean(HDIVConfig.class).isStartParameter("_csrf")).isTrue();
 
-		assertTrue(config.isStartParameter("_csrf"));
-
-		EditableDataValidationResult result = config.getEditableDataValidationProvider().validate("/", "paramName",
-				new String[] { "paramValue" }, "text");
-		assertTrue(result.isValid());
-		result = config.getEditableDataValidationProvider().validate("/", "paramName", new String[] { "<script>XSS</script>" }, "text");
-		assertFalse(result.isValid());
-		assertEquals("simpleXSS", result.getValidationId());
+			assertThat(context.getBean(HDIVConfig.class).getEditableDataValidationProvider()
+					.validate("/", "paramName", new String[] { "paramValue" }, "text").isValid()).isTrue();
+			assertThat(context.getBean(HDIVConfig.class).getEditableDataValidationProvider()
+					.validate("/", "paramName", new String[] { "<script>XSS</script>" }, "text").isValid()).isFalse();
+			assertThat(context.getBean(HDIVConfig.class).getEditableDataValidationProvider()
+					.validate("/", "paramName", new String[] { "<script>XSS</script>" }, "text").getValidationId()).isEqualTo("simpleXSS");
+		});
 	}
 
 	@Configuration
 	public static class Config {
 
 		@Bean
-		public EmbeddedServletContainerFactory containerFactory() {
-			return containerFactory;
+		public ServletWebServerFactory webServerFactory() {
+			return webServerFactory;
 		}
 
 		@Bean
-		public EmbeddedServletContainerCustomizerBeanPostProcessor embeddedServletContainerCustomizerBeanPostProcessor() {
-			return new EmbeddedServletContainerCustomizerBeanPostProcessor();
+		public WebServerFactoryCustomizerBeanPostProcessor ServletWebServerCustomizerBeanPostProcessor() {
+			return new WebServerFactoryCustomizerBeanPostProcessor();
 		}
 
 	}
