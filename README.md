@@ -3,12 +3,12 @@
 spring-boot-starter-hdiv
 ========================
 
-A spring-boot starter that simplifies the usage of the [HDIV](http://www.hdiv.org) library.
+A spring-boot starter that simplifies the usage of the [Hdiv](https://hdivsecurity.com) library.
 
-You only have to add this library to your Spring Boot project and a HDIV filter will be registered for you.
+You only have to add this library to your Spring Boot project and the Hdiv filter will be registered for you.
 
 ### Maven Integration
-Add one of the following dependency to your ``pom.xml`` file, depending on the view technology your project use:
+Add one of the following dependency to your ``pom.xml`` file, depending on the view technology your project uses:
 
 ```
 <dependency>
