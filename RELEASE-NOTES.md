@@ -3,6 +3,10 @@
 ## Hdiv Spring Boot Starter Changelog
 https://github.com/hdiv/spring-boot-starter-hdiv
 
+###1.3.1
+
+ * [NEW] Hdiv core 3.4.0
+
 ###1.3.0
 
  * [NEW] Spring Boot 2.0
