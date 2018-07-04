@@ -20,6 +20,11 @@
 			<artifactId>spring-boot-starter-hdiv-commons</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hdiv</groupId>
+			<artifactId>hdiv-jstl-taglibs-1.2</artifactId>
+			<version>${org.hdiv.version}</version>
+		</dependency>
 	</dependencies>
 
 </project>
